@@ -1,0 +1,3 @@
+import {useEffect,useRef,useImperativeHandle,forwardRef} from 'react'; import {Seal,Options} from '../../seal';
+export interface SealCanvasHandle { download:()=>string|undefined; }
+export const SealCanvas=forwardRef<SealCanvasHandle,{options:Options}>(({options},ref)=>{const el=useRef<HTMLDivElement>(null);const initialOptions=useRef(options);const seal=useRef<Seal | undefined>(undefined);useEffect(()=>{if(el.current&&!seal.current)seal.current=new Seal(el.current,initialOptions.current);return()=>{seal.current?.destroy();seal.current=undefined}},[]);useEffect(()=>{seal.current?.update(options)},[options]);useImperativeHandle(ref,()=>({download:()=>seal.current?.toBase64(true)}));return <div className="canvas-wrap" ref={el}/>});

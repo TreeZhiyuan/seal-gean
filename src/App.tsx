@@ -1,0 +1,1 @@
+import {NavLink,Outlet} from 'react-router-dom'; export function App(){return <><header><NavLink to="/">Seal Generator</NavLink><nav><NavLink to="/generator">生成器</NavLink><NavLink to="/about">关于</NavLink></nav></header><Outlet/></>}
