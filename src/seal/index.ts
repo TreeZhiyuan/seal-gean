@@ -475,4 +475,4 @@ export {
   defaultInnerBorderOpts,
   defaultCenterTextOpts,
 };
-export type { Options } from './types';
+export type { Options, BorderOptions, FiveStar, TextOptions } from './types';
