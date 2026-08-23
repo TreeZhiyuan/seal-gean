@@ -110,6 +110,8 @@ export class Seal {
    */
   render() {
     if (!this.canvas || !this.context) return;
+    /** 每次重绘都从默认变换开始，避免绘制状态影响下一次更新 */
+    this.context.setTransform(1, 0, 0, 1, 0, 0);
     /** 重置画布 */
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -138,6 +140,7 @@ export class Seal {
    * 销毁印章
    */
   destroy() {
+    this.canvas?.remove();
     this.canvas = undefined;
     this.context = undefined;
   }
@@ -305,6 +308,7 @@ export class Seal {
   }: Required<TextOptions> & { textBaseline?: CanvasTextBaseline }) {
     if (!this.canvas || !this.context || !visible || !text) return;
 
+    this.context.save();
     this.context.font = getFontStr({
       fontWeight,
       fontSize,
@@ -317,6 +321,7 @@ export class Seal {
     this.context.lineWidth = 1;
 
     this.context.fillText(text, this.centerPoint[0], this.centerPoint[1] + distance);
+    this.context.restore();
 }
 
   /**
@@ -335,6 +340,7 @@ export class Seal {
   }: WriteSurroundTextOptions) {
     if (!this.canvas || !this.context || !visible || !text) return;
 
+    this.context.save();
     this.context.font = getFontStr({
       fontWeight: fontWeight,
       fontSize: fontSize,
@@ -389,13 +395,13 @@ export class Seal {
   ) {
     if (!this.canvas || !this.context) return;
 
-    this.context.translate(0, 0);
+    this.context.save();
     this.context.lineWidth = width;
     this.context.strokeStyle = color;
     this.context.beginPath();
     this.context.arc(circleCenter.x, circleCenter.y, radius - width / 2, 0, Math.PI * 2);
     this.context.stroke();
-    this.context.save();
+    this.context.restore();
   }
 
   /**
