@@ -5,7 +5,7 @@
 ## 开发
 
 ```bash
-nvm use
+nvm use 24.19.0
 pnpm install
 pnpm dev
 pnpm lint
