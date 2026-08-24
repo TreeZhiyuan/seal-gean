@@ -1,6 +1,6 @@
 # seal-generator
 
-基于 TreeZhiyuan/seal Canvas 核心算法的 React + TypeScript + Vite 印章生成器。
+基于 React + TypeScript + Vite 印章生成器，目前仅支持生成圆形印章。
 
 ## 开发
 
