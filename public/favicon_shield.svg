@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title>在线印章生成器</title>
+  <circle cx="32" cy="32" r="29" fill="#fff" stroke="#d9363e" stroke-width="4" />
+  <circle cx="32" cy="32" r="20" fill="none" stroke="#d9363e" stroke-width="2" />
+  <path fill="#d9363e" d="m32 15 4.8 9.7 10.7 1.6-7.7 7.5 1.8 10.6L32 39.4l-9.6 5 1.8-10.6-7.7-7.5 10.7-1.6z" />
+</svg>
