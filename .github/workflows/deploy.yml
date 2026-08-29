@@ -13,6 +13,8 @@ jobs:
         with: {node-version: 24.19.0, cache: pnpm}
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+        env:
+          VITE_BASE_PATH: './'
       - uses: actions/upload-pages-artifact@v3
         with: {path: ./dist}
   deploy:
