@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { SealCanvas, SealCanvasHandle } from '../components/SealCanvas/SealCanvas';
 import { SealForm } from '../components/SealForm/SealForm';
 import { defaultBorderOpts, defaultCenterTextOpts, defaultFiveStarOpts, defaultInnerBorderOpts, defaultInnerLoopLineOpts, defaultOpts, defaultSerNoOpts, defaultSubTextOpts, defaultTextOpts, Options } from '../seal';
-const initial: Options = { ...defaultOpts, type: 'company', shape: 'circle', text: { ...defaultTextOpts, text: '超级无敌爱国创新科技有限公司' }, subText: { ...defaultSubTextOpts, text: '合同专用章' }, serNo: { ...defaultSerNoOpts }, fiveStar: { ...defaultFiveStarOpts, color: 'red' }, border: { ...defaultBorderOpts, color: 'red' }, innerBorder: { ...defaultInnerBorderOpts, color: 'red' }, innerLoopLine: { ...defaultInnerLoopLineOpts, color: 'red' }, centerText: { ...defaultCenterTextOpts, text: '测试文案' } };
+const initial: Options = { ...defaultOpts, type: 'company', shape: 'circle', text: { ...defaultTextOpts, text: '保护伞进化卡普空制药责任有限公司' }, subText: { ...defaultSubTextOpts, text: '浣熊养殖基地' }, serNo: { ...defaultSerNoOpts }, fiveStar: { ...defaultFiveStarOpts, color: 'red' }, border: { ...defaultBorderOpts, color: 'red' }, innerBorder: { ...defaultInnerBorderOpts, color: 'red' }, innerLoopLine: { ...defaultInnerLoopLineOpts, color: 'red' }, centerText: { ...defaultCenterTextOpts, text: '生化危机' } };
 export function Generator() {
   const [options, setOptions] = useState<Options>(initial);
   const canvas = useRef<SealCanvasHandle>(null);
