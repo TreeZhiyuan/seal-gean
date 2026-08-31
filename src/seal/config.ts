@@ -4,7 +4,7 @@ export const defaultOpts = {
   color: 'red',
   width: 300,
   height: 300,
-  showTransparent: true,
+  showTransparent: false,
 }
 
 export const defaultBorderOpts = {

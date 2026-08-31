@@ -12,7 +12,7 @@ function ColorField({ label, value, onChange }: { label: string; value?: string;
 }
 
 function NumberField({ label, value, onChange, hint, disabled = false }: { label: string; value?: number; onChange: (value: number) => void; hint?: string; disabled?: boolean }) {
-  const numberHint = `${hint ? `${hint}，` : ''}可使用键盘上/下方向键调整数值`;
+  const numberHint = `${hint ? `${hint}，` : ''}可使用鼠标滚轮或键盘上/下方向键调整数值`;
   return <label className="field"><span>{label}{hint && <small>{hint}</small>}</span><input aria-label={label} aria-keyshortcuts={disabled ? undefined : 'ArrowUp ArrowDown'} title={disabled ? undefined : numberHint} type="number" value={value ?? 0} disabled={disabled} onChange={event => onChange(Number(event.target.value))} /></label>;
 }
 
