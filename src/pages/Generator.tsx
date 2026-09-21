@@ -30,10 +30,10 @@ export function Generator() {
 
   return <main className="generator-page" aria-label="印章生成工具">
     <section className="workspace-shell">
-      <div className="preview-panel">
+      <div className="preview-panel" aria-label="印章只读预览" data-preview-readonly="true">
         <div className="preview-heading">
-          <div><span className="section-kicker">LIVE PREVIEW</span><h1>印章预览</h1></div>
-          <span className="preview-status"><span className="status-dot" />实时更新</span>
+          <div><span className="section-kicker">LIVE PREVIEW</span><h1>印章预览</h1><span className="preview-readonly">只读预览</span></div>
+          <span className="preview-status"><span className="status-dot" />配置实时更新</span>
         </div>
         <Tabs items={[
           { label: '预览', content: <div className="preview-tab-content"><div className="preview-stage"><div className="preview-grid"><SealCanvas ref={canvas} options={options} /></div></div><div className="preview-caption"><ShieldCheck size={16} aria-hidden="true" /><span>所有配置均在浏览器本地处理</span></div></div> },
