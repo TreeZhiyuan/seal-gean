@@ -189,6 +189,7 @@ export class Seal {
       radius: opts.radius > maxRadius
         ? maxRadius
         : opts.radius,
+      shape: opts.shape,
     });
   }
 
@@ -205,6 +206,7 @@ export class Seal {
       radius: opts.radius > maxRadius
         ? maxRadius
         : opts.radius,
+      shape: opts.shape,
     });
   }
 
@@ -221,6 +223,7 @@ export class Seal {
       radius: opts.radius > maxRadius
         ? maxRadius
         : opts.radius,
+      shape: opts.shape,
     });
   }
 
@@ -340,6 +343,16 @@ export class Seal {
   }: WriteSurroundTextOptions) {
     if (!this.canvas || !this.context || !visible || !text) return;
 
+    if (this.options.shape === 'square') {
+      this.writeSquareText({ visible, text, color, radius, fontSize, fontWeight, position, startDegree, distance: 0 });
+      return;
+    }
+
+    if (this.options.shape === 'ellipse') {
+      this.writeEllipseText({ visible, text, color, radius, fontSize, fontWeight, position, startDegree, distance: 0 });
+      return;
+    }
+
     this.context.save();
     this.context.font = getFontStr({
       fontWeight: fontWeight,
@@ -376,6 +389,114 @@ export class Seal {
   }
 
   /**
+   * 绘制椭圆印章的上下弧形文案。
+   * 椭圆使用参数方程定位字符，并沿切线旋转，避免直接套用圆形半径导致文字变形。
+   */
+  private writeEllipseText({
+    text,
+    color,
+    radius,
+    fontSize,
+    fontWeight,
+    position = 'top',
+    startDegree = 25,
+  }: WriteSurroundTextOptions) {
+    if (!this.canvas || !this.context || !text) return;
+
+    const start = Math.max(0, Math.min(80, startDegree)) * Math.PI / 180;
+    const span = Math.PI - start * 2;
+    const maxRadius = this.getMaxRadius();
+    const rx = Math.min(radius, maxRadius);
+    const ry = Math.min(radius * 0.68, maxRadius * 0.78);
+
+    this.context.save();
+    this.context.fillStyle = color;
+    this.context.textAlign = 'center';
+    this.context.textBaseline = 'middle';
+    this.context.font = getFontStr({ fontWeight, fontSize });
+
+    const arcLength = ((rx + ry) / 2) * span;
+    const measuredWidth = this.context.measureText(text).width;
+    const fittedSize = measuredWidth > arcLength
+      ? Math.max(10, fontSize * arcLength / measuredWidth)
+      : fontSize;
+    if (fittedSize !== fontSize) {
+      this.context.font = getFontStr({ fontWeight, fontSize: fittedSize });
+    }
+
+    const chars = text.split('');
+    const denominator = Math.max(chars.length - 1, 1);
+
+    for (let i = 0; i < chars.length; i++) {
+      const progress = i / denominator;
+      const angle = position === 'top'
+        ? Math.PI + start + progress * span
+        : Math.PI - start - progress * span;
+      const tangentAngle = position === 'top'
+        ? Math.atan2(ry * Math.cos(angle), -rx * Math.sin(angle))
+        : Math.atan2(-ry * Math.cos(angle), rx * Math.sin(angle));
+
+      this.context.save();
+      this.context.translate(
+        this.centerPoint[0] + rx * Math.cos(angle),
+        this.centerPoint[1] + ry * Math.sin(angle),
+      );
+      this.context.rotate(tangentAngle);
+      this.context.fillText(chars[i], 0, 0);
+      this.context.restore();
+    }
+
+    this.context.restore();
+  }
+
+  /** 绘制方形印章上下两条直线文案，并自动压缩过长文本。 */
+  private writeSquareText({
+    text,
+    color,
+    radius,
+    fontSize,
+    fontWeight,
+    position = 'top',
+    startDegree = 25,
+  }: WriteSurroundTextOptions) {
+    if (!this.canvas || !this.context || !text) return;
+
+    const half = Math.min(radius, this.getMaxRadius());
+    const sideMargin = Math.max(fontSize / 2, Math.min(half * 0.14, startDegree));
+    const availableWidth = Math.max(fontSize, half * 2 - sideMargin * 2);
+
+    this.context.save();
+    this.context.fillStyle = color;
+    this.context.textAlign = 'center';
+    this.context.textBaseline = 'middle';
+    this.context.font = getFontStr({ fontWeight, fontSize });
+
+    const measuredWidth = this.context.measureText(text).width;
+    const fittedSize = measuredWidth > availableWidth
+      ? Math.max(10, fontSize * availableWidth / measuredWidth)
+      : fontSize;
+    if (fittedSize !== fontSize) {
+      this.context.font = getFontStr({ fontWeight, fontSize: fittedSize });
+    }
+
+    const left = this.centerPoint[0] - half + sideMargin;
+    const right = this.centerPoint[0] + half - sideMargin;
+    const denominator = Math.max(text.length - 1, 1);
+    const y = position === 'top'
+      ? this.centerPoint[1] - half + fittedSize * 0.75
+      : this.centerPoint[1] + half - fittedSize * 0.75;
+
+    for (let i = 0; i < text.length; i++) {
+      const x = text.length === 1
+        ? this.centerPoint[0]
+        : left + (right - left) * (i / denominator);
+      this.context.fillText(text[i], x, y);
+    }
+
+    this.context.restore();
+  }
+
+  /**
    * 绘制圆形
    * @param width 线条的宽度
    * @param color 线条的颜色
@@ -387,6 +508,7 @@ export class Seal {
     color: string,
     {
       radius,
+      shape = 'circle',
       circleCenter = {
         x: this.centerPoint[0],
         y: this.centerPoint[1],
@@ -399,9 +521,52 @@ export class Seal {
     this.context.lineWidth = width;
     this.context.strokeStyle = color;
     this.context.beginPath();
-    this.context.arc(circleCenter.x, circleCenter.y, radius - width / 2, 0, Math.PI * 2);
+
+    if (shape === 'square') {
+      this.drawSquarePath(circleCenter.x, circleCenter.y, radius - width / 2);
+    } else if (shape === 'ellipse') {
+      const [radiusX, radiusY] = this.getEllipseRadii(radius - width / 2);
+      this.context.ellipse(circleCenter.x, circleCenter.y, radiusX, radiusY, 0, 0, Math.PI * 2);
+    } else {
+      this.context.arc(circleCenter.x, circleCenter.y, radius - width / 2, 0, Math.PI * 2);
+    }
+
     this.context.stroke();
     this.context.restore();
+  }
+
+  private drawSquarePath(centerX: number, centerY: number, half: number) {
+    if (!this.context) return;
+
+    const left = centerX - half;
+    const top = centerY - half;
+    const right = centerX + half;
+    const bottom = centerY + half;
+    const corner = Math.min(10, half * 0.08);
+
+    this.context.moveTo(left + corner, top);
+    this.context.lineTo(right - corner, top);
+    this.context.quadraticCurveTo(right, top, right, top + corner);
+    this.context.lineTo(right, bottom - corner);
+    this.context.quadraticCurveTo(right, bottom, right - corner, bottom);
+    this.context.lineTo(left + corner, bottom);
+    this.context.quadraticCurveTo(left, bottom, left, bottom - corner);
+    this.context.lineTo(left, top + corner);
+    this.context.quadraticCurveTo(left, top, left + corner, top);
+    this.context.closePath();
+  }
+
+  private getEllipseRadii(radius: number): [number, number] {
+    const maxRadius = this.getMaxRadius();
+    return [
+      Math.min(radius, maxRadius),
+      Math.min(radius * 0.68, maxRadius * 0.78),
+    ];
+  }
+
+  private getMaxRadius() {
+    if (!this.canvas) return 0;
+    return Math.min(this.canvas.width, this.canvas.height) / 2;
   }
 
   /**

@@ -53,6 +53,8 @@ export type SealShape = `circle` | `square` | `ellipse`;
 export type DrawCircleOptions = {
   /** 圆的半径 */
   radius: number,
+  /** 印章轮廓形状 */
+  shape?: SealShape;
   /** 圆心，默认canvas中心点 */
   circleCenter?: {
     x: number;
