@@ -454,10 +454,7 @@ a { color: inherit; }
   .preview-panel.is-collapsed .preview-status { display: none; }
   .preview-panel.is-collapsed .preview-toggle { min-height: 28px; }
   .preview-panel.is-collapsed .ui-tabs-list { display: none; }
-  .preview-panel.is-collapsed .preview-stage { position: absolute; top: 8px; right: 78px; width: 62px; height: 62px; min-height: 0; padding: 4px; }
-  .preview-panel.is-collapsed .preview-grid { width: 54px; padding: 4px; }
-  .preview-panel.is-collapsed .canvas-wrap { height: 44px; min-height: 0; }
-  .preview-panel.is-collapsed .canvas-wrap canvas { width: 44px; }
+  .preview-panel.is-collapsed .preview-stage { display: none; }
   .preview-panel.is-collapsed .preview-caption { display: none; }
   .preview-panel.is-collapsed .preview-tab-content { min-height: 0; }
   .workspace-shell.is-preview-collapsed .configuration-header { top: 78px; }
