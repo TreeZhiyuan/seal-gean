@@ -150,6 +150,14 @@ a { color: inherit; }
 
 .preview-status { display: inline-flex; align-items: center; gap: 7px; margin-top: 4px; color: #aab3a8; font-size: 11px; white-space: nowrap; }
 
+.preview-heading-actions { display: flex; align-items: center; gap: 12px; }
+
+.preview-toggle { display: none; align-items: center; gap: 4px; min-height: 30px; padding: 0 8px; border: 1px solid rgba(255,255,255,.14); border-radius: 6px; color: #dfe5dd; background: rgba(255,255,255,.06); font-size: 11px; font-weight: 700; cursor: pointer; }
+
+.preview-toggle:hover { border-color: rgba(255,255,255,.28); background: rgba(255,255,255,.11); }
+
+.preview-toggle:focus-visible { outline: 3px solid rgba(226, 123, 117, .35); outline-offset: 2px; }
+
 .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #7ccc69; box-shadow: 0 0 0 4px rgba(124, 204, 105, .12); }
 
 .preview-tab-content { min-height: 485px; }
@@ -389,6 +397,7 @@ a { color: inherit; }
     border-left: 0;
     border-radius: 0;
   }
+  .workspace-shell.is-preview-collapsed { --mobile-preview-height: 78px; }
   .preview-panel {
     position: sticky;
     top: 0;
@@ -404,6 +413,8 @@ a { color: inherit; }
   .preview-heading h1, .configuration-header h2 { font-size: 17px; }
   .preview-readonly { display: none; }
   .preview-status { margin-top: 2px; font-size: 10px; }
+  .preview-heading-actions { gap: 7px; }
+  .preview-toggle { display: inline-flex; }
   .ui-tabs-list { padding-bottom: 4px; }
   .preview-tab-content { min-height: 0; }
   .preview-stage { height: calc(100vw - 32px); min-height: 0; padding: 8px 0 10px; }
@@ -422,6 +433,34 @@ a { color: inherit; }
   .seo-intro, .seo-content, .about-content { width: min(100% - 32px, 1180px); }
   .seo-intro { padding-top: 42px; }
   .about-page { padding-top: 42px; }
+}
+
+@media (max-width: 600px) {
+  .preview-panel.is-collapsed {
+    height: 78px;
+    padding-top: 10px;
+    padding-bottom: 8px;
+  }
+
+  .preview-panel.is-collapsed .preview-heading {
+    align-items: center;
+    height: 58px;
+    margin-bottom: 0;
+    padding-right: 0;
+  }
+
+  .preview-panel.is-collapsed .preview-heading > div:first-child { min-width: 0; }
+  .preview-panel.is-collapsed .preview-heading h1 { margin-top: 2px; font-size: 15px; }
+  .preview-panel.is-collapsed .preview-status { display: none; }
+  .preview-panel.is-collapsed .preview-toggle { min-height: 28px; }
+  .preview-panel.is-collapsed .ui-tabs-list { display: none; }
+  .preview-panel.is-collapsed .preview-stage { position: absolute; top: 8px; right: 78px; width: 62px; height: 62px; min-height: 0; padding: 4px; }
+  .preview-panel.is-collapsed .preview-grid { width: 54px; padding: 4px; }
+  .preview-panel.is-collapsed .canvas-wrap { height: 44px; min-height: 0; }
+  .preview-panel.is-collapsed .canvas-wrap canvas { width: 44px; }
+  .preview-panel.is-collapsed .preview-caption { display: none; }
+  .preview-panel.is-collapsed .preview-tab-content { min-height: 0; }
+  .workspace-shell.is-preview-collapsed .configuration-header { top: 78px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

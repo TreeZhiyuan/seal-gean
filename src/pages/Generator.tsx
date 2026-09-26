@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Download, RotateCcw, ShieldCheck, Sparkles } from 'lucide-react';
+import { ChevronDown, ChevronUp, Download, RotateCcw, ShieldCheck, Sparkles } from 'lucide-react';
 import { SealCanvas, SealCanvasHandle } from '../components/SealCanvas/SealCanvas';
 import { SealForm } from '../components/SealForm/SealForm';
 import { Button } from '../components/ui/Button';
@@ -13,10 +13,24 @@ const initial: Options = { ...defaultOpts, type: 'company', shape: 'circle', tex
 export function Generator() {
   const [options, setOptions] = useState<Options>(initial);
   const [toast, setToast] = useState<string | null>(null);
+  const [previewExpanded, setPreviewExpanded] = useState(true);
   const canvas = useRef<SealCanvasHandle>(null);
 
   useEffect(() => {
     document.title = '在线印章生成器 - 免费制作印章图片';
+  }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 600px)');
+    const handleScroll = () => {
+      if (!media.matches) return;
+      if (window.scrollY > 96) setPreviewExpanded(false);
+      if (window.scrollY < 16) setPreviewExpanded(true);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const dismissToast = useCallback(() => setToast(null), []);
@@ -29,11 +43,17 @@ export function Generator() {
   }, []);
 
   return <main className="generator-page" aria-label="印章生成工具">
-    <section className="workspace-shell">
-      <div className="preview-panel" aria-label="印章只读预览" data-preview-readonly="true">
+    <section className={`workspace-shell ${previewExpanded ? 'is-preview-expanded' : 'is-preview-collapsed'}`}>
+      <div className={`preview-panel ${previewExpanded ? 'is-expanded' : 'is-collapsed'}`} aria-label="印章只读预览" data-preview-readonly="true">
         <div className="preview-heading">
           <div><span className="section-kicker">LIVE PREVIEW</span><h1>印章预览</h1><span className="preview-readonly">只读预览</span></div>
-          <span className="preview-status"><span className="status-dot" />配置实时更新</span>
+          <div className="preview-heading-actions">
+            <span className="preview-status"><span className="status-dot" />配置实时更新</span>
+            <button className="preview-toggle" type="button" aria-label={previewExpanded ? '收起印章预览' : '展开印章预览'} aria-expanded={previewExpanded} onClick={() => setPreviewExpanded(value => !value)}>
+              {previewExpanded ? <ChevronUp size={16} aria-hidden="true" /> : <ChevronDown size={16} aria-hidden="true" />}
+              <span>{previewExpanded ? '收起' : '展开'}</span>
+            </button>
+          </div>
         </div>
         <Tabs items={[
           { label: '预览', content: <div className="preview-tab-content"><div className="preview-stage"><div className="preview-grid"><SealCanvas ref={canvas} options={options} /></div></div><div className="preview-caption"><ShieldCheck size={16} aria-hidden="true" /><span>所有配置均在浏览器本地处理</span></div></div> },
